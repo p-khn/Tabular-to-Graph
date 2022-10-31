@@ -39,7 +39,7 @@ class TabGraph(object):
         self.data.drop(columns_to_drop, axis=1, inplace=True)
 
     # Make relationship-based graph
-    def make_graph(self, w_size=4):
+    def make_graph(self, lag=4):
         data_adjcy_matx = np.exp(self.data.corr())
         G = nx.from_pandas_adjacency(data_adjcy_matx)
         edge_data = nx.to_pandas_edgelist(G)
@@ -48,12 +48,12 @@ class TabGraph(object):
         self.weights = edge_data['weight'].to_numpy()
         self.data = self.data.values
         self.features = [
-            self.data[i: i + w_size, :].T
-            for i in range(self.data.shape[0] - w_size)
+            self.data[i: i + lag, :].T
+            for i in range(self.data.shape[0] - lag)
         ]
         self.targets = [
-            self.data[i + w_size, :].T
-            for i in range(self.data.shape[0] - w_size)
+            self.data[i + lag, :].T
+            for i in range(self.data.shape[0] - lag)
         ]
 
     # Get the graph dataset
